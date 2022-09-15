@@ -1,0 +1,36 @@
+[general]
+port = 3_000
+
+[submodules.escss]
+priority = true
+enabled = false
+writeDTS = false
+overwriteRealpath = true
+
+[submodules.html]
+priority = false
+enabled = true
+extraHeaders = [ ]
+
+[submodules.typescript]
+priority = false
+enabled = true
+uglify = true
+writeJS = false
+jsx = true
+jsxImportSource = "/elm"
+
+[submodules.elm]
+priority = false
+enabled = false
+
+[submodules.importmaps]
+priority = false
+enabled = false
+loadAfter = [ "html" ]
+
+[submodules.esxml]
+priority = true
+enabled = false
+writeDTS = false
+extensions = [ "svg", "xml", "xhtml" ]
