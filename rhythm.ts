@@ -1,98 +1,86 @@
 import { addDrawer, canvas, ctx } from './autoCanvas.js';
 import { hex2, map } from './helper.js';
-import { Note, NoteType } from './noteTypes/index.js';
+import { CircleNote, Note, NoteType, SideNote } from './noteTypes/index.js';
 import { PersistentCircle } from './persistCircle.js';
 import { addPersistent } from './persistent.js';
 import { PersistentText } from './persistText.js';
 
-const currentNotes: Note[] = [];
+const currentNotes: { [key: string]: Note[] } = {};
 
-function createCircle(): Note {
-	return {
-		type: 'circle',
-		x: Math.random() * innerWidth,
-		y: Math.random() * innerHeight,
-		created: Date.now(),
-		end:
-			(currentNotes[currentNotes.length - 1]?.end ?? Date.now()) +
-			500 +
-			map(0, 100, 5000, 1000)(scoreAvg() ?? 0) * Math.random(),
-		size: 50 + Math.random() * 100,
-	};
+function getAllNotes() {
+	const out: Note[] = [];
+	for (const key in currentNotes) {
+		out.push(...currentNotes[key]);
+	}
+	out.sort((a, b) => a.end - b.end);
+	return out;
+}
+
+const allNotes = getAllNotes();
+
+function addNote(note: Note) {
+	currentNotes[note.key] = currentNotes[note.key] ?? [];
+	currentNotes[note.key].push(note);
+	currentNotes[note.key].sort((a, b) => a.end - b.end);
+
+	allNotes.push(note);
+	allNotes.sort((a, b) => a.end - b.end);
+}
+
+function timing(lb = 1) {
+	return (
+		(allNotes[allNotes.length - lb]?.end ?? Date.now()) +
+		500 +
+		map(0, 100, 5000, 100)(scoreAvg() ?? 0) * Math.random()
+	);
+}
+
+function createNote(lb = 1): Note {
+	if (Math.random() < 0.5) {
+		return new CircleNote(timing(lb));
+	} else {
+		if (Math.random() < 1 / 4) {
+			return new SideNote(timing(lb), 'left', '#77bb77');
+		} else if (Math.random() < 1 / 3) {
+			return new SideNote(timing(lb), 'right', '#bbbb77');
+		} else if (Math.random() < 1 / 2) {
+			return new SideNote(timing(lb), 'up', '#77bbbb');
+		} else {
+			return new SideNote(timing(lb), 'down', '#bb7777');
+		}
+	}
 }
 const scores: number[] = [];
+
+for (let i = 0; i < 50; i++) {
+	const note = createNote(2);
+	note.created = allNotes[allNotes.length - 2]?.end ?? Date.now();
+	note.lifetimeMapper = map(note.created, note.end, 0, 1);
+	addNote(note);
+}
 
 function scoreAvg() {
 	const out = scores.reduce((a, b) => a + b, 0) / scores.length;
 	return isNaN(out) ? 0 : out;
 }
 
-const maxCircleSize = 1920;
-
-const circleCount = 2;
+const noteCount = 2;
 // const color = "#ee5555"
-const color = '#bb77bb';
-
-const params = new URLSearchParams(location.search);
 
 function draw() {
-	if (currentNotes.length < circleCount && Math.random() < 0.1) {
-		currentNotes.push(createCircle());
+	// if (allNotes.length < noteCount && Math.random() < 0.1) {
+	// 	addNote(createNote());
+	// }
+
+	if (allNotes[0]?.isDead()) {
+		const note = allNotes.shift() as Note;
+		currentNotes[note.key].shift();
+		note.score(ctx, scores, -100);
 	}
 
-	if (
-		currentNotes[0] &&
-		map(
-			currentNotes[0].created,
-			currentNotes[0].end,
-			maxCircleSize,
-			currentNotes[0].size
-		)(Date.now()) < 0
-	) {
-		currentNotes.shift();
-		scores.push(-100);
-	}
-
-	ctx.strokeStyle = color;
-	ctx.lineWidth = 10;
-	for (const circle of currentNotes) {
-		if (circle.created < Date.now()) {
-			ctx.fillStyle =
-				color + hex2(map(circle.created, circle.end, 0, 180)(Date.now()));
-			ctx.beginPath();
-			if (
-				map(
-					circle.created,
-					circle.end,
-					maxCircleSize,
-					circle.size
-				)(Date.now()) > 0
-			)
-				ctx.arc(
-					circle.x,
-					circle.y,
-					map(
-						circle.created,
-						circle.end,
-						maxCircleSize,
-						circle.size
-					)(Date.now()),
-					0,
-					Math.PI * 2
-				);
-			ctx.fill();
-
-			ctx.beginPath();
-			if (Date.now() - circle.created < 200)
-				ctx.arc(
-					circle.x,
-					circle.y,
-					map(circle.created, circle.created + 200, 0, circle.size)(Date.now()),
-					0,
-					Math.PI * 2
-				);
-			else ctx.arc(circle.x, circle.y, circle.size, 0, Math.PI * 2);
-			ctx.stroke();
+	for (const note of allNotes) {
+		if (note.created < Date.now()) {
+			note.draw(ctx);
 		}
 	}
 
@@ -109,35 +97,12 @@ function draw() {
 }
 addDrawer(draw);
 
-const scoreMap: [number, string, string][] = [
-	[97, 'P E R F E C T', '#6644ee'],
-	[80, 'G R E A T', '#66cc99'],
-	[60, 'G O O D', '#eecc33'],
-	[40, 'O K', '#ee7733'],
-	[0, 'B A D', '#ee2233'],
-	[-Infinity, 'M I S S', '#882233'],
-];
-
 addEventListener('keydown', (e) => {
-	if (e.key == ' ') {
-		const circle = currentNotes.shift();
-		if (circle) {
-			const score =
-				100 - Math.abs(map(circle.created, circle.end, -200, 0)(Date.now()));
-			scores.push(score);
-
-			for (let level of scoreMap) {
-				if (score > level[0]) {
-					addPersistent(
-						new PersistentText(level[1], level[2], circle.x, circle.y)
-					);
-					addPersistent(
-						new PersistentCircle(circle.x, circle.y, circle.size, level[2])
-					);
-
-					break;
-				}
-			}
-		}
+	// console.log(e.key);
+	const notes = currentNotes[e.key] ?? [];
+	if (notes.length > 0 && notes[0].created < Date.now()) {
+		const note = notes.shift() as Note;
+		allNotes.splice(allNotes.indexOf(note), 1);
+		note.score(ctx, scores);
 	}
 });
