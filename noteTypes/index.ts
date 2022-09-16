@@ -146,7 +146,7 @@ export class CircleNote extends Note {
 		ctx.lineWidth = 10;
 
 		ctx.fillStyle =
-			this.color + hex2(map(this.created, this.end, 0, 180)(Date.now()));
+			this.color + hex2(this.lifetimeMapper(Date.now()) ** 2 * 180);
 		ctx.beginPath();
 		if (
 			map(

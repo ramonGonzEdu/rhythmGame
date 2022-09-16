@@ -17,15 +17,17 @@ export class PersistentLine extends Persistent {
 		this.height = height;
 	}
 
+	n = 250;
+
 	draw(ctx: CanvasRenderingContext2D): void {
 		ctx.save();
 		ctx.fillStyle = this.color + hex2((1 - this.lifeMapper(Date.now())) * 255);
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.rot);
 		ctx.fillRect(
-			-25 * this.lifeMapper(Date.now()),
+			-this.n * this.lifeMapper(Date.now()),
 			-this.height / 2,
-			50 * this.lifeMapper(Date.now()),
+			2 * this.n * this.lifeMapper(Date.now()),
 			this.height
 		);
 		ctx.restore();
