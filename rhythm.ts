@@ -1,9 +1,6 @@
-import { addDrawer, canvas, ctx } from './autoCanvas.js';
-import { hex2, map } from './helper.js';
-import { CircleNote, Note, NoteType, SideNote } from './noteTypes/index.js';
-import { PersistentCircle } from './persistCircle.js';
-import { addPersistent } from './persistent.js';
-import { PersistentText } from './persistText.js';
+import { addDrawer, ctx } from './autoCanvas.js';
+import { map } from './helper.js';
+import { CircleNote, Note, SideNote } from './noteTypes/index.js';
 
 const currentNotes: { [key: string]: Note[] } = {};
 
