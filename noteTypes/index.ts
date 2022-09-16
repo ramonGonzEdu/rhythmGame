@@ -92,7 +92,6 @@ export abstract class Note implements INote {
 export class CircleNote extends Note {
 	key = ' ';
 
-	created: number;
 	static maxCircleSize = 1920;
 	// {
 	// 	type: 'circle',
@@ -146,7 +145,7 @@ export class CircleNote extends Note {
 		ctx.lineWidth = 10;
 
 		ctx.fillStyle =
-			this.color + hex2(this.lifetimeMapper(Date.now()) ** 2 * 180);
+			this.color + hex2(this.lifetimeMapper(Date.now()) ** 5 * 180);
 		ctx.beginPath();
 		if (
 			map(
@@ -188,7 +187,7 @@ export class SideNote extends Note {
 	constructor(
 		public end: number,
 		public type: 'left' | 'right' | 'up' | 'down',
-		public color: string
+		public color: string = '#bb77bb'
 	) {
 		super(end);
 		this.type = type;

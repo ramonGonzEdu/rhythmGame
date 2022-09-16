@@ -1,0 +1,6 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"lib": ["ES2022", "ESNext.AsyncIterable", "DOM"]
+	}
+}
