@@ -1,3 +1,7 @@
 [submodule "bstypes"]
-	path = bstypes
-	url = ./deps/bstypes/
+	path = ./deps/bstypes/
+	url = https://github.com/KivalEvan/BeatSaber-Deno.git
+
+[submodule "zipjs"]
+	path = ./deps/zipjs/
+	url = 'https://github.com/gildas-lormeau/zip.js.git'
