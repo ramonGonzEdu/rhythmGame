@@ -58,7 +58,7 @@ function draw() {
 export function startGame() {
 	addDrawer(draw);
 
-	addEventListener('keyup', (e) => {
+	addEventListener('keydown', (e) => {
 		// console.log(e.key);
 		const notes = currentNotes[e.key] ?? [];
 		if (notes.length > 0 && notes[0].created < Date.now()) {

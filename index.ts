@@ -122,22 +122,38 @@ input.addEventListener('change', async (e) => {
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x._cutDirection == 0) {
-						const note = new SideNote(songStart + x._time * beatSize, 'up');
+						const note = new SideNote(
+							songStart + x._time * beatSize,
+							'up',
+							'#bbbb77'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x._cutDirection == 1) {
-						const note = new SideNote(songStart + x._time * beatSize, 'down');
+						const note = new SideNote(
+							songStart + x._time * beatSize,
+							'down',
+							'#bb5555'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x._cutDirection == 2) {
-						const note = new SideNote(songStart + x._time * beatSize, 'left');
+						const note = new SideNote(
+							songStart + x._time * beatSize,
+							'left',
+							'#77bb77'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x._cutDirection == 3) {
-						const note = new SideNote(songStart + x._time * beatSize, 'right');
+						const note = new SideNote(
+							songStart + x._time * beatSize,
+							'right',
+							'#5555bb'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
@@ -161,22 +177,38 @@ input.addEventListener('change', async (e) => {
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x.d == 0) {
-						const note = new SideNote(songStart + x.b * beatSize, 'up');
+						const note = new SideNote(
+							songStart + x.b * beatSize,
+							'up',
+							'#bbbb77'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x.d == 1) {
-						const note = new SideNote(songStart + x.b * beatSize, 'down');
+						const note = new SideNote(
+							songStart + x.b * beatSize,
+							'down',
+							'#bb5555'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x.d == 2) {
-						const note = new SideNote(songStart + x.b * beatSize, 'left');
+						const note = new SideNote(
+							songStart + x.b * beatSize,
+							'left',
+							'#77bb77'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
 					} else if (x.d == 3) {
-						const note = new SideNote(songStart + x.b * beatSize, 'right');
+						const note = new SideNote(
+							songStart + x.b * beatSize,
+							'right',
+							'#5555bb'
+						);
 						note.created = note.end - noteTime;
 						note.lifetimeMapper = map(note.created, note.end, 0, 1);
 						return note;
@@ -193,7 +225,7 @@ input.addEventListener('change', async (e) => {
 });
 
 const audio = new SoundPlayer('/assets/hit.mp3', 0.193);
-addEventListener('keyup', () => {
+addEventListener('keydown', () => {
 	audio.play();
 });
 
